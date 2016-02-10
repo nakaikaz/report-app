@@ -1,0 +1,38 @@
+.image-container {
+	list-style: none;
+	li {
+		margin-bottom: 15px;
+	}
+	.image-box {
+		position: relative;
+		.well {
+			color: #999;
+		}
+	}
+	.glyphicon-remove {
+		visibility: hidden;
+		opacity: 0;
+		transition: visibility 0.5s linear, opacity 0.5s linear;
+		font-size: 48px;
+		position: absolute;
+		top: 0;
+		right: 0;
+		margin-top: 10px;
+		margin-right: 10px;
+		width: 50px;
+		height: 50px;
+		z-index: 101;
+		color: #333;
+		cursor: pointer;
+		&.visible {
+			visibility: visible;
+			opacity: 1;
+		}
+		&.hover {
+			color: #666;
+		}
+		&.active {
+			color: #000;
+		}
+	}
+}

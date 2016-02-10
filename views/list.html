@@ -1,0 +1,22 @@
+<div class="main" ng-controller="ListController">
+	<div class="container">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">メモ一覧</h3>
+			</div>
+			<ul class="list-group">
+				<li class="list-group-item" ng-repeat="report in reports | orderBy : '-id'">
+					<h5>{{report.updated_at}}</h5>
+					<div class="media">
+						<img ng-src="{{report.thumbnail}}" class="media-object pull-left">
+						<div class="media-body">
+							<h4 class="report-heading">{{report.user}}</h4>
+							<h4 class="media-heading"><a href="/#/report/edit/{{report.id}}">{{ report.title }}</a></h4>
+							{{report.content}}
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

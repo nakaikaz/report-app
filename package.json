@@ -1,0 +1,27 @@
+{
+  "name": "report-app",
+  "version": "1.0.0",
+  "description": "web service for posting reports",
+  "main": "index.js",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.1"
+  },
+  "devDependencies": {
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nakaikaz/agri-report.git"
+  },
+  "author": "nakaikaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nakaikaz/agri-report/issues"
+  },
+  "homepage": "https://github.com/nakaikaz/agri-report#readme"
+}

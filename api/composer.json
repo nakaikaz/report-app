@@ -1,0 +1,9 @@
+{
+	"require": {
+		"slim/slim": "*",
+		"palanik/corsslim": "*"
+	},
+	"autoload": {
+		"psr-0": {"lib": "src/"}
+	}
+}

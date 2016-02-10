@@ -1,0 +1,53 @@
+<div class="main">
+	<div class="container">
+		<div class="box">
+			<div class="box-title">
+				<h2>ユーザー登録</h2>
+			</div>
+			<div class="box-inner">
+				<alert ng-show="signupError" type="warning" close="signupError = false">このメールアドレスは既に登録されています</alert>
+				<form role="form" class="form-horizontal" name="signupForm" ng-submit="signUp()" novalidate>
+					<div class="form-group" ng-class="{'has-error': signupForm.$submitted && signupForm.email.$invalid}">
+						<label class="col-md-3 control-label">メールアドレス</label>
+						<div class="col-md-9">
+							<input type="email" class="form-control" name="email" placeholder="メールアドレス" ng-model="signup.email" required/>
+							<div ng-show="(signupForm.$submitted && signupForm.email.$pristine) || (signupForm.$submitted && signupForm.email.$touched)">
+								<p class="help-block" ng-show="signupForm.email.$error.required">メールアドレスを入力してください</p>
+								<p class="help-block" ng-show="signupForm.email.$error.email">メールアドレスの形式が不正です</p>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error': signupForm.$submitted && signupForm.password.$invalid}">
+						<label class="col-md-3 control-label">パスワード</label>
+						<div class="col-md-9">
+							<input type="password" class="form-control" name="password" placeholder="パスワード" ng-model="signup.password" ng-minlength="8" required/>
+							<div ng-show="(signupForm.$submitted && signupForm.email.$pristine) || (signupForm.$submitted && signupForm.email.$touched)">
+								<p class="help-block" ng-show="signupForm.password.$error.required">パスワードを入力してください</p>
+								<p class="help-block" ng-show="signupForm.password.$error.minlength">パスワードは８文字以上入力してください</p>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error': signupForm.$submitted && signupForm.password2.$invalid}">
+						<label for="UserPassword2" class="col-md-3 control-label">パスワード（確認）</label>
+						<div class="col-md-9">
+							<input type="password" class="form-control" name="password2" placeholder="パスワード（確認）" ng-model="signup.password2" password-match="signup.password" required/>
+							<p class="help-block" ng-show="signupForm.password2.$dirty && signupForm.password2.$error.passwordNoMatch">パスワードが不一致です</p>
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error': signupForm.$submitted && signupForm.name.$invalid}">
+						<label class="col-md-3 control-label">名前</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="name" placeholder="名前" ng-model="signup.name" required/>
+							<div ng-show="(signupForm.$submitted && signupForm.name.$pristine) || (signupForm.$submitted && signupForm.name.$touched)">
+								<p class="help-block" ng-show="signupForm.name.$error.required">名前を入力してください</p>
+							</div>
+						</div>
+					</div>
+					<div class="submit">
+						<button class="btn btn-lg btn-success btn-block">登録</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
