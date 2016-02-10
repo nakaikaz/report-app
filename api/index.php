@@ -1,5 +1,6 @@
 <?php
-define('DEV_HOST', 'agri-report.local');
+// httpd-vhosts.confの環境変数を取得
+defined('APP_ENV') || define('APP_ENV', (getenv('APP_ENV') ? getenv('APP_ENV') : 'production'));
 
 require 'vendor/autoload.php';
 
@@ -10,18 +11,17 @@ if("Asia/Tokyo" != $timezone){
 }
 
 // 開発用はデバッグモード
-$hostname = $_SERVER['SERVER_NAME'];
-if(DEV_HOST === $hostname){
-	define('APP_ENVIRONMENT', 'development');
+if('development' === APP_ENV){
+	define('APP_MODE', 'development');
 	define('DEBUG_MODE', true);
 }else{
-	define('APP_ENVIRONMENT', 'production');
+	define('APP_MODE', 'production');
 	define('DEBUG_MODE', false);
 }
 
 $app = new \Slim\Slim(array(
 	'debug' => DEBUG_MODE,
-	'mode' => APP_ENVIRONMENT
+	'mode' => APP_MODE
 ));
 $cors = array(
 	"origin" => "*",
@@ -30,6 +30,7 @@ $cors = array(
 );
 $app->add(new \CorsSlim\CorsSlim($cors));
 
+// 設定ファイルの読み込み
 require 'config.php';
 
 function echoResponse($statusCode, $response){

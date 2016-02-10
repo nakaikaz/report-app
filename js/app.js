@@ -62,7 +62,6 @@ app.run(['$rootScope', '$location', 'APP', 'Auth', function($rootScope, $locatio
 				}else if(next.$$route){
 					var nextUrl = next.$$route.originalPath;
 					if(nextUrl != '/signup' && nextUrl !='/login'){
-						console.log('login');
 						$location.path('/login');
 					}
 				}
