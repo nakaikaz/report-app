@@ -1,7 +1,8 @@
 <?php
-namespace lib\db;
+//namespace lib\db;
 
-class ImageDB extends \lib\db\DbHandler {
+//class ImageDB extends \lib\db\DbHandler {
+class ImageDB extends DbHandler {
 
 	function __construct($host, $name, $user, $password){
 		parent::__construct($host, $name, $user, $password);

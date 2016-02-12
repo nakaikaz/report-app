@@ -36,13 +36,13 @@ app.controller('EditController', ['$scope', '$rootScope', '$location', '$routePa
 		var fd = new FormData();
 		fd.append('image', data);
 		fd.append('memo', '');
-		fd.append('user', $rootScope.user.email);
+		fd.append('email', $rootScope.user.email);
 		Report.post('report/images', fd, {transformRequest: null, headers: {'Content-Type': undefined}}).then(function(response){
 			if(response.status){
 				var reader = new FileReader();
 				reader.onload = function(){
 					$scope.$apply(function(){
-						$scope.report.images.push({name: response.image.fullpath, memo: response.image.memo, src: reader.result});
+						$scope.report.images.push({name: response.image.name, path: response.image.path, memo: response.image.memo, src: reader.result});
 					});
 				}
 			reader.readAsDataURL(data);

@@ -38,7 +38,7 @@
 							<li class="col-md-4" ng-repeat="image in report.images">
 								<div class="image-box" ng-mouseenter="removeIconVisible=true" ng-mouseleave="removeIconVisible=false">
 									<i class="glyphicon glyphicon-remove" ng-click="removeImage($index)" ng-class="{'hover': hover, 'active': active, 'visible': removeIconVisible}" ng-mouseover="hover=true" ng-mousedown="active=true" ng-mouseleave="active=false;hover=false"></i>
-									<img class="img-responsive" ng-src="{{image.name}}" alt=""/>
+									<img class="img-responsive" ng-src="{{image.path}}" alt=""/>
 									<div class="well well-sm" editable-text ng-model="image.memo">{{image.memo}}</div>
 								</div>
 							</li>

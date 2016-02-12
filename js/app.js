@@ -66,6 +66,8 @@ app.run(['$rootScope', '$location', 'APP', 'Auth', function($rootScope, $locatio
 					}
 				}
 			}
+		}, function(err){
+			console.log(err);
 		});
 	});
 }]);

@@ -13,6 +13,8 @@ app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', fu
 			}else{
 				$scope.signupError = true;
 			}
+		}, function(err){
+			console.log(err);
 		});
 	};
 	$scope.doLogin = function(){

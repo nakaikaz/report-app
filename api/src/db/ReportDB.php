@@ -1,7 +1,9 @@
 <?php
-namespace lib\db;
+//namespace lib\db;
+require_once 'DbHandler.php';
 
-class ReportDB extends \lib\db\DbHandler {
+//class ReportDB extends \lib\db\DbHandler {
+class ReportDB extends DbHandler {
 
 	function __construct($host, $name, $user, $password){
 		parent::__construct($host, $name, $user, $password);

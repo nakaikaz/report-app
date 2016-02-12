@@ -1,6 +1,10 @@
 <?php
+define('BASE_URL', 'http://' . $_SERVER['SERVER_NAME'] . '/report-app/');
+define('IMAGE_DIR', 'uploaded_images/');
 
-define('IMAGE_DIR', '../uploaded_images/');
+require_once dirname(__FILE__) . '/../src/Session.php';
+require_once dirname(__FILE__) . '/../src/db/ReportDB.php';
+require_once dirname(__FILE__) . '/../src/util/Image.php';
 
 function makeHash($email){
 	$now = date('Ymd');
@@ -11,10 +15,10 @@ function makeHash($email){
 
 $app->get('/reports', function() use($app){
 	try {
-		$session = new \lib\Session();
+		$session = new Session();
 		$user_id = $session->get('id');
-		$email = $session->get('email');
-		$db = new \lib\db\ReportDB(
+		//$email = $session->get('email');
+		$db = new ReportDB(
 			$app->config('db_host'),
 			$app->config('db_name'),
 			$app->config('db_user'),
@@ -22,30 +26,9 @@ $app->get('/reports', function() use($app){
 		);
 		$reports = $db->fetchAllByUserId($user_id);
 		foreach($reports as $report){
-			$arr = array();
-			$images = unserialize($report->images);
-			if($images){
-				foreach($images as $image){
-					$obj = new stdClass();
-					$obj->src = IMAGE_DIR . $email . '/' . $image->name;
-					$obj->memo = $image->memo;
-					$arr[] = $obj;
-				}
-				$report->images = $arr;
-			}
-			/*for($i = 0; $i < count($images); $i++){
-				$images[$i] = 'api/uploaded_images/' . $images[$i];
-			}
-			$report->images = $images;
 			# サムネイルのパスも追加
-			$path_info = pathinfo($images[0]);
-			$dir = $path_info['dirname'];
-			$filename = $path_info['filename'];
-			$extension = $path_info['extension'];
-			$thumbnail = $dir . '/'. $filename . '.thumb.' . $extension;
-			$report->thumbnail = $thumbnail;*/
 			if($report->thumbnail){
-				$report->thumbnail = IMAGE_DIR . $email . '/' . $report->thumbnail;
+				$report->thumbnail = BASE_URL . IMAGE_DIR . $report->thumbnail;
 			}
 		}
 		$ret = array('status' => true, 'reports' => $reports);
@@ -59,9 +42,9 @@ $app->get('/reports', function() use($app){
 
 $app->get('/reports/:id', function($id) use($app){
 	try {
-		$session = new \lib\Session();
+		$session = new Session();
 		$email = $session->get('email');
-		$db = new \lib\db\ReportDB(
+		$db = new ReportDB(
 			$app->config('db_host'),
 			$app->config('db_name'),
 			$app->config('db_user'),
@@ -71,13 +54,17 @@ $app->get('/reports/:id', function($id) use($app){
 		$images = unserialize($r->images);
 		$arr = array();
 		foreach($images as $image){
+			if(isset($image->src)){
+				unset($image->src);
+			}
 			$obj = new stdClass();
-			$obj->name = 'uploaded_images/' . $email . '/' . $image->name;
+			$obj->name = $image->name;
+			$obj->path = BASE_URL . IMAGE_DIR . $image->name;
 			$obj->memo = $image->memo;
 			$arr[] = $obj;
 		}
 		$r->images = $arr;
-		$r->thumbnail = 'uploaded_images/' . $email . '/'. $r->thumbnail;
+		$r->thumbnail = BASE_URL . IMAGE_DIR . $email . '/'. $r->thumbnail;
 		$ret = array('status' => true, 'reports' => $r);
 		echoResponse(200, $ret);
 	}catch(PDOException $e){
@@ -95,6 +82,8 @@ $app->post('/report', function() use ($app) {
 		// image->srcは画像データそのものなので削除
 		foreach($r->images as $image){
 			unset($image->src);
+			// 新規投稿時には要らないのか？
+			//$image->name = $r->user->email . '/' . $image->name;
 		}
 		$thumbnail = $r->images[0];
 		$r->images = serialize($r->images);
@@ -107,9 +96,10 @@ $app->post('/report', function() use ($app) {
 		$filename = $pathinfo['filename'];
 		$extension = $pathinfo['extension'];
 		$thumbnailname = $filename . '.thumb.' . $extension;
-		$dst_path = IMAGE_DIR . $r->user->email . '/' . $hash . '/' . $thumbnailname;
-		$src_path = IMAGE_DIR . $r->user->email . '/' . $src_path;
-		\lib\util\Image::copy($src_path, $dst_path, array('width' => 100, 'height' => 100));
+		$dst_path = '../' . IMAGE_DIR . $hash . '/' . $thumbnailname;
+		$src_path = '../' . IMAGE_DIR . $src_path;
+		//\lib\util\Image::copy($src_path, $dst_path, array('width' => 100, 'height' => 100));
+		Image::copy($src_path, $dst_path, array('width' => 100, 'height' => 100));
 		$thumbnailpath = $hash . '/' . $thumbnailname;
 	}else {
 		$r->images = null;
@@ -118,7 +108,7 @@ $app->post('/report', function() use ($app) {
 	}
 
 	try {
-		$db = new \lib\db\ReportDB(
+		$db = new ReportDB(
 			$app->config('db_host'),
 			$app->config('db_name'),
 			$app->config('db_user'),
@@ -154,26 +144,26 @@ $app->post('/report/images', function() use($app){
 		if(!isset($_FILES['image']) || !is_uploaded_file($_FILES['image']['tmp_name'])){
 			throw new Exception('an image file doesn\'t exist.');
 		}
-		$desc = $app->request()->post('desc');
-		$user = $app->request()->post('user');
-		if(!isset($user)){
-			throw new Exception('user isn\'t set.');
+		$memo = $app->request()->post('memo');
+		$email = $app->request()->post('email');
+		if(!isset($email)){
+			throw new Exception('email isn\'t set.');
 		}
 
 		$image_name = $_FILES['image']['name'];
 		$image_size = $_FILES['image']['size'];
 		$image_tmp = $_FILES['image']['tmp_name'];
 
-		$output_dir = IMAGE_DIR . $user . '/';
-		// IMAGE_DIR/$userディレクトリが無ければ作成
+		$output_dir = '../' . IMAGE_DIR . $email . '/';
+		// IMAGE_DIR/$emailディレクトリが無ければ作成
 		if(!is_dir($output_dir)){
 			mkdir($output_dir, 0755, true);
 			chgrp($output_dir, '_www');
 		}
 		// 出力ファイルのパスを作成
-		$hash = makeHash($user);
+		$hash = makeHash($email);
 		$output_dir = $output_dir . $hash . '/';
-		// ./uploaded_images/$user/$hash/ディレクトリが無ければ作成
+		// ./uploaded_images/$email/$hash/ディレクトリが無ければ作成
 		if(!is_dir($output_dir)){
 			mkdir($output_dir, 0755, true);
 			chgrp($output_dir, '_www');
@@ -229,16 +219,17 @@ $app->post('/report/images', function() use($app){
 		}
 
 		imagedestroy($dst_res);
+		imagedestroy($src_res);
 
 		if(!$ret) {
 			throw new Exception('failed create an image');
 		}
 
-		$session = new \lib\Session();
-		$email = $session->get('email');
+		//$session = new Session();
+		//$email = $session->get('email');
 		$full_path = IMAGE_DIR . $email . '/' . $hash . '/' . $image_name_only . '.' . $image_extension;
-		$name = $hash . '/' . $image_name_only . '.' . $image_extension;
-		$image = array('name' => $name, 'fullpath' => $full_path, 'memo' => '');
+		$name = $email . '/' . $hash . '/' . $image_name_only . '.' . $image_extension;
+		$image = array('name' => $name, 'path' => $full_path, 'memo' => $memo);
 		$ret = array('status' => true, 'image' => $image);
 		echoResponse(200, $ret);
 	} catch(Exception $e){
@@ -247,17 +238,14 @@ $app->post('/report/images', function() use($app){
 	}
 });
 
-$app->delete('/report/image/:hash/:name', function($hash, $imageName) use($app) {
+$app->delete('/report/image/:email/:hash/:name', function($email, $hash, $imageName) use($app) {
 	try{
-		if(empty($hash) || empty($imageName)){
-			throw new Exception('the hash or the name of image isn\'t set.');
+		if(empty($email) || empty($hash) || empty($imageName)){
+			throw new Exception('the mail or the hash or the name of image isn\'t set.');
 		}
 
-		$session = new \lib\Session();
-		$email = $session->get('email');
-
 		// 削除対象ファイルのパスを作成
-		$imagePath = IMAGE_DIR . $email . '/' . $hash . '/' . $imageName;
+		$imagePath = '../' . IMAGE_DIR . $email . '/' . $hash . '/' . $imageName;
 		if(!is_file($imagePath)){
 			throw new Exception('the image dosen\'t exist.');
 		}
@@ -272,7 +260,7 @@ $app->delete('/report/image/:hash/:name', function($hash, $imageName) use($app) 
 	}
 });
 
-$app->delete('/report/:id/images/:dir/:email/:hash/:name', function($id, $dir, $email, $hash, $name) use($app){
+$app->delete('/report/:id/images/:email/:hash/:name', function($id, $email, $hash, $name) use($app){
 	try{
 		//$session = new \lib\Session();
 		//$email = $session->get('email');
@@ -282,7 +270,7 @@ $app->delete('/report/:id/images/:dir/:email/:hash/:name', function($id, $dir, $
 		//if(isset($r)){
 			//$images = unserialize($r->images);
 			// 削除対象ファイルのパスを作成
-			$image_path = '../' . $dir  . '/' . $email . '/' . $hash . '/' . $name;
+			$image_path = '../' . IMAGE_DIR . $email . '/' . $hash . '/' . $name;
 			//$imagePath = IMAGE_DIR . $email . '/' . $images[(int)$index]->name;
 			if(!is_file($image_path)){
 				throw new Exception('the image dosen\'t exist.');
@@ -302,7 +290,7 @@ $app->delete('/reports/:id', function($id) use($app){
 	try {
 		$report = null;
 		// レポートを削除
-		$db = new \lib\db\ReportDB(
+		$db = new ReportDB(
 			$app->config('db_host'),
 			$app->config('db_name'),
 			$app->config('db_user'),
@@ -310,11 +298,11 @@ $app->delete('/reports/:id', function($id) use($app){
 		);
 		$db->delete($id, $report);
 		// 保存されている画像も削除
-		$session = new \lib\Session();
-		$email = $session->get('email');
+		//$session = new \lib\Session();
+		//$email = $session->get('email');
 		$images = unserialize($report->images);
 		foreach($images as $image){
-			$image_path = IMAGE_DIR . $email . '/' . $image->name;
+			$image_path = '../' . IMAGE_DIR . $image->name;
 			$done = unlink($image_path);
 		}
 		$ret = array('status' => true);
@@ -333,32 +321,25 @@ $app->delete('/reports/:id', function($id) use($app){
 $app->put('/reports/:id', function($id) use($app) {
 	$body = $app->request->getBody();
 	$r = json_decode($body);
-	$session = new \lib\Session();
-	$email = $session->get('email');
+	$email = $r->user->email;
 	$arr = array();
 	if(isset($r->images)){
 		foreach($r->images as $image){
 			$obj = new stdClass();
-			$pieces = explode('/', $image->name);
-			if($pieces[0] == '..'){
-				$obj->name =$pieces[3] . '/' . $pieces[4];
-				$obj->memo = $image->memo;
-			}else{
-				$obj->name = $pieces[2] . '/' . $pieces[3];
-				$obj->memo = $image->memo;
-			}
+			$obj->name = $image->name;
+			$obj->path = BASE_URL . IMAGE_DIR . $image->name;
+			$obj->memo = $image->memo;
 			$arr[] = $obj;
 			}
 		$r->images = serialize($arr);
 	}
 	try {
-		$db = new \lib\db\ReportDB(
+		$db = new ReportDB(
 			$app->config('db_host'),
 			$app->config('db_name'),
 			$app->config('db_user'),
 			$app->config('db_password')
 		);
-		// TODO $r->images もアップデートする
 		$db->update($id, array(
 			'user_id' => $r->user->id,
 			'title' => $r->title,

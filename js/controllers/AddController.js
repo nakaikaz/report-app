@@ -5,7 +5,7 @@ app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', 
 		var fd = new FormData();
 		fd.append('image', data);
 		fd.append('memo', '');
-		fd.append('user', $rootScope.user.email);
+		fd.append('email', $rootScope.user.email);
 		Report.post('report/images', fd, {transformRequest: null, headers: {'Content-Type': undefined}}).then(function(response){
 			if(response.status){
 				var reader = new FileReader();
@@ -16,6 +16,8 @@ app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', 
 				}
 			reader.readAsDataURL(data);
 			}
+		}, function(err){
+			console.log(err);
 		});
 	});
 	$scope.removeImage = function(index){
@@ -25,6 +27,8 @@ app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', 
 			if(response.status){
 				$scope.report.images.splice(index, 1);
 			}
+		}, function(err){
+			console.log(err);
 		});
 	}
 	$scope.add = function(){
@@ -32,6 +36,8 @@ app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', 
 			if(response.status){
 				$location.path('/reports');
 			}
+		}, function(err){
+			console.log(err);
 		});
 	};
 

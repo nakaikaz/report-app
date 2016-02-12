@@ -1,7 +1,9 @@
 <?php
-namespace lib\db;
+//namespace lib\db;
+require_once 'DbHandler.php';
 
-class UserDB extends \lib\db\DbHandler {
+//class UserDB extends \lib\db\DbHandler {
+class UserDB extends DbHandler {
 
 	private static $algo = '$2a';
 	private static $cost = '$10';

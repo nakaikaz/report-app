@@ -1,5 +1,5 @@
 <?php
-namespace lib\util;
+//namespace lib\util;
 
 class passwordHash {
 	private static $algo = '$2a';
@@ -20,4 +20,3 @@ class passwordHash {
 		return ($hash == $new_hash);
 	}
 }
-

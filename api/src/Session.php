@@ -1,5 +1,5 @@
 <?php
-namespace lib;
+//namespace lib;
 
 class Session {
 	protected static $session_started = false;
