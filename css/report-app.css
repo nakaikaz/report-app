@@ -58,23 +58,23 @@ body {
   visibility: visible;
   z-index: 1;
 }
-.overlay.fade {
+.overlay.fadeInOut {
   opacity: 0.1;
 }
-.overlay.fade.ng-hide-add,
-.overlay.fade.ng-hide-remove {
+.overlay.fadeInOut.ng-hide-add,
+.overlay.fadeInOut.ng-hide-remove {
   transition: 1s linear all;
 }
-.overlay.fade.ng-hide-add {
+.overlay.fadeInOut.ng-hide-add {
   opacity: 0.1;
 }
-.overlay.fade.ng-hide-add.ng-hide-add-active {
+.overlay.fadeInOut.ng-hide-add.ng-hide-add-active {
   opacity: 0;
 }
-.overlay.fade.ng-hide-remove {
+.overlay.fadeInOut.ng-hide-remove {
   opacity: 0.1;
 }
-.overlay.fade.ng-hide-remove.ng-hide-remove-active {
+.overlay.fadeInOut.ng-hide-remove.ng-hide-remove-active {
   opacity: 0;
 }
 .progress-container {
