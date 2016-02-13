@@ -3,7 +3,7 @@ module.exports = function(grunt){
 		less: {
 			development: {
 				src: ['./less/*.less'],
-				dest: './css/agri-report.css'
+				dest: './css/report-app.css'
 			}
 		},
 		watch: {

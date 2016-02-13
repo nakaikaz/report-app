@@ -1,4 +1,4 @@
-var app = angular.module('reportApp', ['ui.bootstrap', 'ngRoute']);
+var app = angular.module('reportApp', ['ui.bootstrap', 'ngRoute', 'ngAnimate']);
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider
 	.when('/', {
