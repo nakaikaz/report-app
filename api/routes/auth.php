@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../src/Session.php';
 require_once dirname(__FILE__) . '/../src/db/UserDB.php';
+//require_once dirname(__FILE__) . '/../src/util/PasswordHash.php';
 
 $app->get('/session', function() use($app){
 	$session = new Session();
@@ -26,10 +27,9 @@ $app->post('/signup', function() use($app){
 	$password = $r->user->password;
 	$isUserExists = $db->fetchByEmail($email);
 	if(!$isUserExists){
-		require_once dirname(__FILE__) . '/../src/util/PasswordHash.php';
-		//$password = \lib\util\PasswordHash::hash($password);
-		$password = PasswordHash::hash($password);
-		$result = $db->insert($email, $name, $password);
+		//$password = PasswordHash::hash($password);
+		$hashed_password = password_hash($password, PASSWORD_DEFAULT, array('cost' => 10));
+		$result = $db->insert($email, $name, $hashed_password);
 		if($result){
 			$response = array(
 				'status' => true,
@@ -72,9 +72,8 @@ $app->post('/login', function() use($app){
 		$email = $r->user->email;
 		$user = $db->fetchByEmail($email);
 		if($user){
-			require_once dirname(__FILE__) . '/../src/util/PasswordHash.php';
-			//if(\lib\util\PasswordHash::check($user->password, $password)){
-			if(PasswordHash::check($user->password, $password)){
+			//if(PasswordHash::check($user->password, $password)){
+			if(password_verify($password, $user->password)){
 				$response = array(
 					'status' => true,
 					'message' => 'Logged in successfully!',

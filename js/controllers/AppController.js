@@ -24,6 +24,8 @@ app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', fu
 			}else{
 				$scope.loginError = true;
 			}
+		}, function(err){
+			console.log(err);
 		});
 	}
 	$scope.logout = function(){
