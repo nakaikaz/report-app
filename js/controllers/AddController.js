@@ -2,6 +2,7 @@ app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', 
 	$scope.report = {title: '', content: '', images: [], user: $rootScope.user};
 
 	$scope.$on('doneFileModel', function(event, data){
+		$scope.$emit('loading', true);
 		var fd = new FormData();
 		fd.append('image', data);
 		fd.append('memo', '');
@@ -14,8 +15,11 @@ app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', 
 						$scope.report.images.push({name: response.image.name, memo: response.image.memo, src: reader.result});
 					});
 				}
-			reader.readAsDataURL(data);
+				reader.readAsDataURL(data);
+			}else{
+				console.log(response);
 			}
+			$scope.$emit('loading', false);
 		}, function(err){
 			console.log(err);
 		});
@@ -32,10 +36,12 @@ app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', 
 		});
 	}
 	$scope.add = function(){
+		$scope.$emit('loading', true);
 		Report.post('report', $scope.report).then(function(response){
 			if(response.status){
 				$location.path('/reports');
 			}
+			$scope.$emit('loading', false);
 		}, function(err){
 			console.log(err);
 		});

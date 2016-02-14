@@ -1,4 +1,5 @@
 app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', function($scope, $rootScope, $location, Auth){
+	$scope.loading = false;
 	$scope.loginError = false;
 	$scope.signupError = false;
 	$scope.login = {};
@@ -33,4 +34,7 @@ app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', fu
 			$location.path('login');
 		});
 	};
+	$scope.$on('loading', function(event, args){
+		$scope.loading = args;
+	});
 }]);
