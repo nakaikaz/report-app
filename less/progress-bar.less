@@ -8,20 +8,26 @@
   opacity: 0.1;
   visibility: visible;
   z-index:1;
-  &.fadeInOut {
-    opacity: 0.1;
-    &.ng-hide-add, &.ng-hide-remove {
+  &.fadeIn {
+    &.ng-hide-remove {
+      opacity: 0;
+      -webkit-transition: 1s linear all;
+      -moz-transition: 1s linear all;
+      -o-transition: 1s linear all;
       transition: 1s linear all;
-    }
-    &.ng-hide-add {
-      opacity: 0.1;
-      &.ng-hide-add-active {
-        opacity: 0;
+      &.ng-hide-remove-active {
+        opacity: 0.1;
       }
     }
-    &.ng-hide-remove {
+  }
+  &.fadeOut {
+    &.ng-hide-add {
       opacity: 0.1;
-      &.ng-hide-remove-active {
+      -webkit-transition: 1s linear all;
+      -moz-transition: 1s linear all;
+      -o-transition: 1s linear all;
+      transition: 1s linear all;
+      &.ng-hide-add-active {
         opacity: 0;
       }
     }
@@ -37,20 +43,26 @@
   margin:auto;
   width: 80%;
   height: 20px;
-  &.fade {
-    opacity: 1;
-    &.ng-hide-add, &.ng-hide-remove {
+  &.fadeIn {
+    &.ng-hide-remove {
+      opacity: 0;
+      -webkit-transition: 1s linear all;
+      -moz-transition: 1s linear all;
+      -o-transition: 1s linear all;
       transition: 1s linear all;
-    }
-    &.ng-hide-add {
-      opacity: 1;
-      &.ng-hide-add-active {
-        opacity: 0;
+      &.ng-hide-remove-active {
+        opacity: 1;
       }
     }
-    &.ng-hide-remove {
+  }
+  &.fadeOut {
+    &.ng-hide-add {
       opacity: 1;
-      &.ng-hide-remove-active {
+      -webkit-transition: 1s linear all;
+      -moz-transition: 1s linear all;
+      -o-transition: 1s linear all;
+      transition: 1s linear all;
+      &.ng-hide-add-active {
         opacity: 0;
       }
     }

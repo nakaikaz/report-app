@@ -1,5 +1,4 @@
 app.controller('AddController', ['$scope', '$rootScope', '$location', 'Report', function($scope, $rootScope, $location, Report){
-	$scope.loading = false;
 	$scope.report = {title: '', content: '', images: [], user: $rootScope.user};
 
 	$scope.$on('doneFileModel', function(event, data){

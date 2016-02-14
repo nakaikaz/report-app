@@ -58,23 +58,24 @@ body {
   visibility: visible;
   z-index: 1;
 }
-.overlay.fadeInOut {
-  opacity: 0.1;
-}
-.overlay.fadeInOut.ng-hide-add,
-.overlay.fadeInOut.ng-hide-remove {
+.overlay.fadeIn.ng-hide-remove {
+  opacity: 0;
+  -webkit-transition: 1s linear all;
+  -moz-transition: 1s linear all;
+  -o-transition: 1s linear all;
   transition: 1s linear all;
 }
-.overlay.fadeInOut.ng-hide-add {
+.overlay.fadeIn.ng-hide-remove.ng-hide-remove-active {
   opacity: 0.1;
 }
-.overlay.fadeInOut.ng-hide-add.ng-hide-add-active {
-  opacity: 0;
-}
-.overlay.fadeInOut.ng-hide-remove {
+.overlay.fadeOut.ng-hide-add {
   opacity: 0.1;
+  -webkit-transition: 1s linear all;
+  -moz-transition: 1s linear all;
+  -o-transition: 1s linear all;
+  transition: 1s linear all;
 }
-.overlay.fadeInOut.ng-hide-remove.ng-hide-remove-active {
+.overlay.fadeOut.ng-hide-add.ng-hide-add-active {
   opacity: 0;
 }
 .progress-container {
@@ -88,23 +89,24 @@ body {
   width: 80%;
   height: 20px;
 }
-.progress-container.fade {
-  opacity: 1;
-}
-.progress-container.fade.ng-hide-add,
-.progress-container.fade.ng-hide-remove {
+.progress-container.fadeIn.ng-hide-remove {
+  opacity: 0;
+  -webkit-transition: 1s linear all;
+  -moz-transition: 1s linear all;
+  -o-transition: 1s linear all;
   transition: 1s linear all;
 }
-.progress-container.fade.ng-hide-add {
+.progress-container.fadeIn.ng-hide-remove.ng-hide-remove-active {
   opacity: 1;
 }
-.progress-container.fade.ng-hide-add.ng-hide-add-active {
-  opacity: 0;
-}
-.progress-container.fade.ng-hide-remove {
+.progress-container.fadeOut.ng-hide-add {
   opacity: 1;
+  -webkit-transition: 1s linear all;
+  -moz-transition: 1s linear all;
+  -o-transition: 1s linear all;
+  transition: 1s linear all;
 }
-.progress-container.fade.ng-hide-remove.ng-hide-remove-active {
+.progress-container.fadeOut.ng-hide-add.ng-hide-add-active {
   opacity: 0;
 }
 
