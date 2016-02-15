@@ -1,10 +1,6 @@
 var app = angular.module('reportApp', ['ui.bootstrap', 'ngRoute', 'ngAnimate']);
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider
-	.when('/', {
-		controller: 'HomeController',
-		templateUrl: 'views/home.html'
-	})
 	.when('/signup', {
 		title: 'サインアップ',
 		controller: 'AppController',
