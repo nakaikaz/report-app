@@ -1,0 +1,29 @@
+<div class="main">
+    <div class="container">
+        <div class="box">
+            <div class="box-title">
+                <h2>新規登録</h2>
+            </div>
+            <div class="box-inner">
+                <alert ng-show="signupError" type="warning" close="signupError = false">
+                このメールアドレスは既に登録されています
+                </alert>
+                <form role="form" class="form-horizontal" name="preSignupForm" ng-submit="preSignUp()" novalidate>
+                    <div class="form-group" ng-class="{'has-error': preSignupForm.$submitted && signupForm.email.$invalid}">
+                        <label class="col-md-3 control-label">メールアドレス</label>
+                        <div class="col-md-9">
+                            <input type="email" class="form-control" name="email" placeholder="メールアドレス" ng-model="signup.email" required/>
+                            <div ng-show="(preSignupForm.$submitted && signupForm.email.$pristine) || (signupForm.$submitted && signupForm.email.$touched)">
+                                <p class="help-block" ng-show="preSignupForm.email.$error.required">メールアドレスを入力してください</p>
+                                <p class="help-block" ng-show="preSignupForm.email.$error.email">メールアドレスの形式が不正です</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit">
+                        <button class="btn btn-lg btn-success btn-block">登録</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
