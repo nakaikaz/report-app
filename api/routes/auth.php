@@ -12,16 +12,42 @@ $app->get('/session', function() use($app){
 	echoResponse(200, $response);
 });
 
+$app->post('/presignup', function() use($app){
+    $response = array();
+    $r = json_decode($app->request->getBody());
+    $email = $r->user->email;
+    verifyRequiredParams(array('email'), $r->user);
+    $dbHost = $app->config('db_host');
+    $dbName = $app->config('db_name');
+    $dbUser = $app->config('db_user');
+    $dbPass = $app->config('db_password');
+    $db = new UserDB($dbHost, $dbName, $dbUser, $dbPass);
+    $isUserExists = $db->fetchByEmail($email);
+    if(!$isUserExists){
+        // TODO:登録用URLを記載したメールを送信する
+        $response = array(
+            'status' => true,
+            'message' => 'You can proceed next step.',
+        );
+        echoResponse(200, $response);
+	}else{
+        $response = array(
+            'status' => false,
+            'message' => 'The user with the provided email exists!'
+        );
+		echoResponse(201, $response);
+	}
+});
+
 $app->post('/signup', function() use($app){
-	$response = array();
+    $response = array();
 	$r = json_decode($app->request->getBody());
 	verifyRequiredParams(array('email', 'name', 'password'), $r->user);
-	$db = new UserDB(
-		$app->config('db_host'),
-		$app->config('db_name'),
-		$app->config('db_user'),
-		$app->config('db_password')
-	);
+    $dbHost = $app->config('db_host');
+    $dbName = $app->config('db_name');
+    $dbUser = $app->config('db_user');
+    $dbPass = $app->config('db_password');
+    $db = new UserDB($dbHost, $dbName, $dbUser, $dbPass);
 	$name = $r->user->name;
 	$email = $r->user->email;
 	$password = $r->user->password;
@@ -45,14 +71,18 @@ $app->post('/signup', function() use($app){
 			$session->set('name', $name);
 			$session->set('email', $email);
 			echoResponse(200, $response);
-		}else{
-			$response['status'] = false;
-			$response['message'] = 'Failed to create user...';
+        }else{
+            $response = array(
+                'status' => false,
+                'message' => 'Failed to create user...'
+            );
 			echoResponse(201, $response);
 		}
-	}else{
-		$response['status'] = false;
-		$response['message'] = 'The user with the provided email exists!';
+    }else{
+        $response = array(
+            'status' => false,
+            'message' => 'The user with the provided email exists!'
+        );
 		echoResponse(201, $response);
 	}
 });
@@ -62,12 +92,11 @@ $app->post('/login', function() use($app){
 	verifyRequiredParams(array('email', 'password'), $r->user);
 	$response = array();
 	try {
-		$db = new UserDB(
-			$app->config('db_host'),
-			$app->config('db_name'),
-			$app->config('db_user'),
-			$app->config('db_password')
-		);
+        $dbHost = $app->config('db_host');
+        $dbName = $app->config('db_name');
+        $dbUser = $app->config('db_user');
+        $dbPass = $app->config('db_password');
+        $db = new UserDB($dbHost, $dbName, $dbUser, $dbPass);
 		$password = $r->user->password;
 		$email = $r->user->email;
 		$user = $db->fetchByEmail($email);

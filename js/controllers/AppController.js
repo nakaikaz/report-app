@@ -2,10 +2,21 @@ app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', fu
     $scope.loading = false;
     $scope.loginError = false;
     $scope.signupError = false;
+    $scope.preSignupError = false;
     $scope.login = {};
     $scope.signup = {};
+    $scope.presignup = {};
+    $scope.donePreSignup = false;
     $scope.preSignUp = function(){
-
+        Auth.post('presignup', {user: $scope.presignup}).then(function(response){
+            if(response.status){
+                $scope.donePreSignup = true;
+            }else{
+                $scope.preSignupError = true;
+            }
+        }, function(err){
+            console.log(err);
+        });
     };
     $scope.signUp = function(){
         if($scope.signupForm.$invalid){

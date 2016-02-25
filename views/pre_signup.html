@@ -4,26 +4,31 @@
             <div class="box-title">
                 <h2>新規登録</h2>
             </div>
-            <div class="box-inner">
-                <alert ng-show="signupError" type="warning" close="signupError = false">
+            <div class="box-inner" ng-hide="donePreSignup">
+                <alert ng-show="preSignupError" type="warning" close="preSignupError = false">
                 このメールアドレスは既に登録されています
                 </alert>
                 <form role="form" class="form-horizontal" name="preSignupForm" ng-submit="preSignUp()" novalidate>
-                    <div class="form-group" ng-class="{'has-error': preSignupForm.$submitted && signupForm.email.$invalid}">
+                    <div class="form-group" ng-class="{'has-error': preSignupForm.$submitted && preSignupForm.email.$invalid}">
                         <label class="col-md-3 control-label">メールアドレス</label>
                         <div class="col-md-9">
-                            <input type="email" class="form-control" name="email" placeholder="メールアドレス" ng-model="signup.email" required/>
-                            <div ng-show="(preSignupForm.$submitted && signupForm.email.$pristine) || (signupForm.$submitted && signupForm.email.$touched)">
+                            <input type="email" class="form-control" name="email" placeholder="メールアドレス" ng-model="presignup.email" required/>
+                            <div ng-show="(preSignupForm.$submitted && preSignupForm.email.$pristine) || (preSignupForm.$submitted && preSignupForm.email.$touched)">
                                 <p class="help-block" ng-show="preSignupForm.email.$error.required">メールアドレスを入力してください</p>
                                 <p class="help-block" ng-show="preSignupForm.email.$error.email">メールアドレスの形式が不正です</p>
                             </div>
                         </div>
                     </div>
                     <div class="submit">
-                        <button class="btn btn-lg btn-success btn-block">登録</button>
+                        <button class="btn btn-lg btn-success btn-block">次のステップへ</button>
                     </div>
                 </form>
-            </div>
+			</div>
+			<div class="box-inner" ng-show="donePreSignup">
+				<h3>Report-appへの本登録はまだ完了していません。</h3>
+				<p>ご入力頂いたメールアドレス宛に本登録用のURLを送信しました。</p>
+				<p>メールに記載されたURLへアクセスして本登録を完了してください。</p>
+			</div>
         </div>
     </div>
 </div>
