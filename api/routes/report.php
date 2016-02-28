@@ -4,7 +4,7 @@ define('IMAGE_DIR', 'uploaded_images/');
 
 require_once dirname(__FILE__) . '/../src/Session.php';
 require_once dirname(__FILE__) . '/../src/db/ReportDB.php';
-require_once dirname(__FILE__) . '/../src/util/Image.php';
+require_once dirname(__FILE__) . '/../src/Image.php';
 
 function makeHash($email){
 	$now = date('Ymd');

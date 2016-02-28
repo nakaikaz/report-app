@@ -1,4 +1,4 @@
-app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', function($scope, $rootScope, $location, Auth){
+app.controller('AppController', ['$scope', '$rootScope', '$location', '$window', 'Auth', function($scope, $rootScope, $location, $window, Auth){
     $scope.loading = false;
     $scope.loginError = false;
     $scope.signupError = false;
@@ -7,13 +7,28 @@ app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', fu
     $scope.signup = {};
     $scope.presignup = {};
     $scope.donePreSignup = false;
+    $scope.canSignup = false;
+    $scope.token = '';
+    var token = $location.search()['t'];
+    if(token){
+        Auth.get('signup?t=' + token ).then(function(response){
+            if(response.status){
+                $scope.canSignup = response.canSignup;
+                $scope.token = response.token;
+            }
+        }, function(err){
+            console.log(err);
+        });
+    }
     $scope.preSignUp = function(){
+        $scope.loading = true;
         Auth.post('presignup', {user: $scope.presignup}).then(function(response){
             if(response.status){
                 $scope.donePreSignup = true;
             }else{
                 $scope.preSignupError = true;
             }
+            $scope.loading = false;
         }, function(err){
             console.log(err);
         });
@@ -22,9 +37,10 @@ app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', fu
         if($scope.signupForm.$invalid){
             return;
         }
-        Auth.post('signup', {user: $scope.signup}).then(function(response){
+        Auth.post('signup', {user: $scope.signup, token: $scope.token}).then(function(response){
             if(response.status){
-                $location.path('reports');
+                $scope.token = '';
+                $window.location.href = '/report-app/#/reports';
             }else{
                 $scope.signupError = true;
             }
@@ -45,7 +61,7 @@ app.controller('AppController', ['$scope', '$rootScope', '$location', 'Auth', fu
     }
     $scope.logout = function(){
         Auth.get('logout').then(function(response){
-            $location.path('login');
+            $window.location.href = '/report-app/#/account/login';
         });
     };
     $scope.$on('loading', function(event, args){

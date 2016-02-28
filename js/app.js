@@ -1,17 +1,17 @@
 var app = angular.module('reportApp', ['ui.bootstrap', 'ngRoute', 'ngAnimate']);
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
-    .when('/signup', {
-        title: 'サインアップ',
-        controller: 'AppController',
-        templateUrl: 'views/signup.html'
-    })
     .when('/account/pre_signup', {
         title: '新規登録',
         controller: 'AppController',
         templateUrl: 'views/pre_signup.html'
     })
-    .when('/login', {
+    .when('/account/signup', {
+        title: '新規登録',
+        controller: 'AppController',
+        templateUrl: 'views/signup.html'
+    })
+    .when('/account/login', {
         title: 'ログイン',
         controller: 'AppController',
         templateUrl: 'views/login.html'
@@ -60,14 +60,17 @@ app.run(['$rootScope', '$location', 'APP', 'Auth', function($rootScope, $locatio
             }else{
                 if(typeof next === 'undefined'){
                     $location.path('/login');
-                }/*else if(next.$$route){
-                    var nextUrl = next.$$route.originalPath;
+                }else if(next.$$route){
+                    /*var nextUrl = next.$$route.originalPath;
                     if(nextUrl == '/login'){
                         $location.path('/login');
                     }else if(nextUrl != '/signup' && nextUrl !='/login'){
                         $location.path('/login');
-                    }
-                }*/
+                    }*/
+                   var nextUrl = next.$$route.originalPath;
+                   if(nextUrl == '/account/signup'){
+                   }
+                }
             }
         }, function(err){
             console.log(err);

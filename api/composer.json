@@ -1,6 +1,7 @@
 {
 	"require": {
-		"slim/slim": "*",
-		"palanik/corsslim": "*"
+		"slim/slim": "2.*",
+		"palanik/corsslim": "*",
+		"phpmailer/phpmailer": "~5.2"
 	}
 }

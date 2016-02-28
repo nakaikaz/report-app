@@ -10,6 +10,13 @@ if("Asia/Tokyo" != $timezone){
 	date_default_timezone_set("Asia/Tokyo");
 }
 
+// トークンディレクトリを作成
+$tokenDir = dirname(__FILE__) . '/../token';
+if(!is_dir($tokenDir)){
+	mkdir($tokenDir);
+	chmod($tokenDir, 0775);
+}
+
 // 開発用はデバッグモード
 if('development' === APP_ENV){
 	define('APP_MODE', 'development');
@@ -30,8 +37,37 @@ $cors = array(
 );
 $app->add(new \CorsSlim\CorsSlim($cors));
 
+$app->hook('slim.after', function() use($app){
+	// Internal Server Error の時は、内容をファイルに書き出して確認
+	if($app->response()->getStatus() == 500){
+		$body = $app->response()->getBody();
+		$file = dirname(__FILE__).'/error.html';
+		touch($file);
+		file_put_contents($file, $body);
+	}
+});
+
 // 設定ファイルの読み込み
 require 'config.php';
+
+class AppException extends Exception {
+    public $statusCode;
+    public $response;
+
+    function __construct($statusCode = 200, $response = array(), $message = ''){
+        parent::__construct($message);
+        $this->statusCode = $statusCode;
+        $this->response = $response;
+    }
+
+    public function getStatusCode(){
+        return $this->statusCode;
+    }
+
+    public function getResponse(){
+        return $this->response;
+    }
+}
 
 function echoResponse($statusCode, $response){
 	$app = \Slim\Slim::getInstance();
@@ -55,7 +91,7 @@ function verifyRequiredParams($fields, $params){
 		$app = \Slim\Slim::getInstance();
 		$response['status'] = 'error';
 		$response['message'] = 'Required field(s) ' . substr($error_fields, 0, -2) . ' is missing or empty';
-		echoResponse(200, json_encode($response));
+		echoResponse(200, $response);
 		$app->stop();
 	}
 }

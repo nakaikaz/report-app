@@ -4,7 +4,7 @@
 			<div class="box-title">
 				<h2>ユーザー登録</h2>
 			</div>
-			<div class="box-inner">
+			<div class="box-inner" ng-show="canSignup">
 				<alert ng-show="signupError" type="warning" close="signupError = false">このメールアドレスは既に登録されています</alert>
 				<form role="form" class="form-horizontal" name="signupForm" ng-submit="signUp()" novalidate>
 					<div class="form-group" ng-class="{'has-error': signupForm.$submitted && signupForm.email.$invalid}">
